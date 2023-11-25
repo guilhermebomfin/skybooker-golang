@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyBooker - Assentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            display: inline-block;
+            text-align: center;
+            line-height: 50px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .occupied {
+            background-color: #ff9999;
+        }
+
+        .available {
+            background-color: #99ff99;
+        }
+    </style>
+</head>
+<body>
+    <h1>Assentos Disponíveis</h1>
+
+    <div id="seatsContainer">
+        <!-- Assentos serão adicionados dinamicamente aqui -->
+    </div>
+
+    <script src="seats.js"></script>
+</body>
+</html>
