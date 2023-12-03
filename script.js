@@ -38,7 +38,10 @@ document.addEventListener("DOMContentLoaded", function() {
             seatsButton.addEventListener('click', function() {
                 // Redirecionar para a página de assentos do voo
                 window.location.href = `seats.html?voo=${flight.id}`;
+                displayReservationForm(seat, flight); // Passando o objeto do voo corretamente
             });
+            
+            
 
             // Adicionar status de disponibilidade dos assentos
             const availabilityStatus = document.createElement('span');

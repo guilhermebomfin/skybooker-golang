@@ -32,6 +32,15 @@
         .available {
             background-color: #99ff99;
         }
+
+        form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .occupied form {
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +50,27 @@
         <!-- Assentos serão adicionados dinamicamente aqui -->
     </div>
 
+    <form id="reservationForm">
+        <label for="passengerName">Nome do Passageiro:</label>
+        <input type="text" id="passengerName" name="passengerName" required>
+
+        <label for="passengerDOB">Data de Nascimento:</label>
+        <input type="date" id="passengerDOB" name="passengerDOB" required>
+
+        <label for="passengerID">Documento de Identificação:</label>
+        <input type="text" id="passengerID" name="passengerID" required>
+
+        <label for="paymentMethod">Forma de Pagamento:</label>
+        <select id="paymentMethod" name="paymentMethod" required>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="Cartão de Débito">Cartão de Débito</option>
+            <option value="Boleto Bancário">Boleto Bancário</option>
+        </select>
+
+        <button type="submit">Comprar</button>
+    </form>
+
     <script src="seats.js"></script>
 </body>
 </html>
+    
