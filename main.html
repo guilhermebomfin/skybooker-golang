@@ -3,26 +3,71 @@
 <head>
     
     <style>
+        *{
+            background-color: black;
+            color: yellow;
+            margin: 0%;
+        }
      
+        #corpo{
+            display: flex;
+            flex-direction: column ;
+            justify-content: space-between;
+            align-content: space-between;
+            align-items: center;
+            margin: 5px;
+        }
+
         #searchBar {
             margin-left: auto;
-  margin-right: auto;
+            margin-right: auto;
+            border-radius: 3px;
+            margin: 10px;
         }
         #flightsTable {
-            margin-left: auto;
-  margin-right: auto;
+        
         }
         h1{
+            margin: 5%;
             text-align: center;
+            background-color: yellow;
+            color: black;
         }
+        p{
+
+        }
+        #navbar{
+            background-color: yellow;
+            width: 100%;
+            height: 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+       }
+       
+       img{
+        max-width: 10%;
+        background-color: yellow;
+        margin-right: 15px;
+       }
     </style>
 </head>
 <body>
-    <h1>Lista de Voos</h1>
-    <!-- Adicione uma barra de pesquisa -->
-   
-    <input type="text" id="searchBar" placeholder="Pesquise pelo aeroporto, destino ou data">
+    
+        
+    <div id="navbar">
+    <h1>SkyBooker</h1>
+    <img src="./7893979.png" alt="icon avião">
+    </div>
 
+    <div id="corpo">
+   
+    <p>Origem:</p>
+    <input type="text" id="searchBar" placeholder="Aeroporto, destino ou data">
+    
+    
+    <p>Lista de Voos</p>
     <table id="flightsTable" border="1">
         <thead>
             <tr>
@@ -37,7 +82,7 @@
            
         </tbody>
     </table>
-
+    </div>
     <script src="script.js"></script>
     <script src="main.go"></script>
 </body>
