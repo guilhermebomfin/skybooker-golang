@@ -18,6 +18,7 @@ type Seat struct {
 	PassengerID   string  `json:"passengerID,omitempty"`
 	Price         float64 `json:"price,omitempty"`
 }
+
 type SeatResponse struct {
 	ID            int     `json:"id"`
 	Number        string  `json:"number"`
@@ -27,6 +28,7 @@ type SeatResponse struct {
 	PassengerCPF  string  `json:"passengerCPF,omitempty"`
 	Price         float64 `json:"price,omitempty"`
 }
+
 type Flight struct {
 	ID          int     `json:"id"`
 	Origin      string  `json:"origin"`
@@ -66,7 +68,6 @@ func updateSeatHandler(c *gin.Context) {
 
 	seatNumber := c.Param("seatNumber")
 
-	// Lógica para obter e atualizar o assento no seu banco de dados ou estrutura de dados
 	flight, err := findFlightByID(flightID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Voo não encontrado"})
@@ -94,15 +95,18 @@ func updateSeatHandler(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"error": "Assento não encontrado"})
 }
 
-func findFlightByID(id int) (*Flight, error) {
-	for _, flight := range flights {
-		if flight.ID == id {
-			return &flight, nil
-		}
-	}
-	return nil, fmt.Errorf("Voo não encontrado")
+// Adicione esta estrutura para os detalhes do voo
+type FlightDetails struct {
+	ID          int     `json:"id"`
+	Origin      string  `json:"origin"`
+	Destination string  `json:"destination"`
+	Departure   string  `json:"departure"`
+	Seats       []Seat  `json:"seats"`
+	Price       float64 `json:"price,omitempty"`
 }
-router.GET("/flights/:flightID/seats", func(c *gin.Context) {
+
+// Modifique a função getFlightDetailsHandler
+func getFlightDetailsHandler(c *gin.Context) {
 	flightID, err := strconv.Atoi(c.Param("flightID"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID de voo inválido"})
@@ -115,22 +119,26 @@ router.GET("/flights/:flightID/seats", func(c *gin.Context) {
 		return
 	}
 
-	// Converter os assentos para o formato de resposta
-	var seatResponses []SeatResponse
-	for _, seat := range flight.Seats {
-		seatResponses = append(seatResponses, SeatResponse{
-			ID:            seat.ID,
-			Number:        seat.Number,
-			Occupied:      seat.Occupied,
-			PassengerName: seat.PassengerName,
-			PassengerDOB:  seat.PassengerDOB,
-			PassengerCPF:  seat.PassengerCPF,
-			Price:         seat.Price,
-		})
+	flightDetails := FlightDetails{
+		ID:          flight.ID,
+		Origin:      flight.Origin,
+		Destination: flight.Destination,
+		Departure:   flight.Departure,
+		Seats:       flight.Seats,
+		Price:       flight.Price,
 	}
 
-	c.JSON(http.StatusOK, seatResponses)
-})
+	c.JSON(http.StatusOK, flightDetails)
+}
+
+func findFlightByID(id int) (*Flight, error) {
+	for _, flight := range flights {
+		if flight.ID == id {
+			return &flight, nil
+		}
+	}
+	return nil, fmt.Errorf("Voo não encontrado")
+}
 
 func main() {
 	router := gin.Default()
@@ -162,10 +170,10 @@ func main() {
 
 		c.JSON(http.StatusOK, flight.Seats)
 	})
-	
 
 	// Endpoint para atualizar o assento
 	router.PATCH("/flights/:flightID/seats/:seatNumber", updateSeatHandler)
+	router.GET("/flights/:flightID/details", getFlightDetailsHandler)
 
 	router.Run(":8080")
 }

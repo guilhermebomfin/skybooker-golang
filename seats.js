@@ -11,14 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let flightDestination = '';
 
     // Faça uma requisição à API para obter os assentos do voo específico
-    fetch(`http://localhost:8080/flights/${flightId}`)
-        .then(response => response.json())
-        .then(flight => {
-            flightOrigin = flight.origin;
-            flightDestination = flight.destination;
-        })
-        .catch(error => console.error('Erro ao obter dados do voo da API:', error));
-
     fetch(`http://localhost:8080/flights/${flightId}/seats`)
         .then(response => response.json())
         .then(seats => {
@@ -47,13 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const seatNumber = document.getElementById('seatNumber').value;
         const passengerName = document.getElementById('passengerName').value;
         const passengerDOB = document.getElementById('passengerDOB').value;
-        const passengerCPF = document.getElementById('passengerCPF').value;
+        const seatPrice = document.getElementById('seatPrice').value;
 
         // Atualize o assento com os dados do passageiro
-        updateSeatWithReservation(seatNumber, passengerName, passengerDOB, passengerCPF);
+        updateSeatWithReservation(seatNumber, passengerName, passengerDOB, seatPrice);
 
         // Oculte o formulário após a reserva
         reservationForm.style.display = 'none';
+
+        // Recarregue a página automaticamente
+        window.location.reload();
     });
 
     // Função para exibir o formulário de reserva
@@ -72,6 +67,16 @@ document.addEventListener("DOMContentLoaded", function () {
         seatNumberField.id = 'seatNumber';
         seatNumberField.value = seat.number;
 
+        // Adicionar o preço ao formulário
+        const priceLabel = document.createElement('label');
+        priceLabel.textContent = 'Preço:';
+        const priceInput = document.createElement('input');
+        priceInput.type = 'text';
+        priceInput.name = 'seatPrice';
+        priceInput.id = 'seatPrice';
+        priceInput.value = seat.price.toFixed(2);
+        priceInput.readOnly = true;
+
         // Adicionar campos do formulário
         const nameLabel = document.createElement('label');
         nameLabel.textContent = 'Nome do Passageiro:';
@@ -82,20 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
         nameInput.required = true;
 
         const dobLabel = document.createElement('label');
-        dobLabel.textContent = 'Data de Nascimento:';
+        dobLabel.textContent = '\nData de Nascimento:';
         const dobInput = document.createElement('input');
         dobInput.type = 'date';
         dobInput.name = 'passengerDOB';
         dobInput.id = 'passengerDOB';
         dobInput.required = true;
-
-        const cpfLabel = document.createElement('label');
-        cpfLabel.textContent = 'CPF do Passageiro:';
-        const cpfInput = document.createElement('input');
-        cpfInput.type = 'text';
-        cpfInput.name = 'passengerCPF';
-        cpfInput.id = 'passengerCPF';
-        cpfInput.required = true;
 
         const submitButton = document.createElement('button');
         submitButton.type = 'submit';
@@ -103,17 +100,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Adicionar campos ao formulário
         reservationForm.appendChild(seatNumberField);
+        reservationForm.appendChild(priceLabel);
+        reservationForm.appendChild(priceInput);
         reservationForm.appendChild(nameLabel);
         reservationForm.appendChild(nameInput);
         reservationForm.appendChild(dobLabel);
         reservationForm.appendChild(dobInput);
-        reservationForm.appendChild(cpfLabel);
-        reservationForm.appendChild(cpfInput);
         reservationForm.appendChild(submitButton);
     }
 
     // Função para atualizar o assento com os dados da reserva
-    function updateSeatWithReservation(seatNumber, passengerName, passengerDOB, passengerCPF) {
+    function updateSeatWithReservation(seatNumber, passengerName, passengerDOB, seatPrice) {
         // Lógica para atualizar o assento na API com os dados fornecidos
         fetch(`http://localhost:8080/flights/${flightId}/seats/${seatNumber}`, {
             method: 'PATCH',
@@ -124,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 occupied: true,
                 passengerName: passengerName,
                 passengerDOB: passengerDOB,
-                passengerCPF: passengerCPF,
+                price: parseFloat(seatPrice), // Converte o preço de string para float
             }),
         })
             .then(response => {
@@ -136,14 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(updatedSeat => {
                 console.log(`Assento ${updatedSeat.number} reservado para ${updatedSeat.passengerName}`);
-                // Mostrar alerta de sucesso na compra
-                showPurchaseSuccess(updatedSeat.flightID, updatedSeat.number, updatedSeat.passengerName, updatedSeat.passengerDOB, updatedSeat.passengerCPF);
+                
             })
             .catch(error => console.error('Erro ao atualizar o assento na API:', error));
-    }
-
-    // Função para exibir um alerta de sucesso na compra
-    function showPurchaseSuccess(flightID, seatNumber, passengerName, passengerDOB, passengerCPF) {
-        alert(`Compra realizada com sucesso!\n\nVoo: ${flightID}\nOrigem: ${flightOrigin}\nDestino: ${flightDestination}\nAssento: ${seatNumber}\nNome do Passageiro: ${passengerName}\nData de Nascimento: ${passengerDOB}\nCPF do Passageiro: ${passengerCPF}`);
     }
 });
